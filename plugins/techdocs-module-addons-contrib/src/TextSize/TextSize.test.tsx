@@ -16,16 +16,22 @@
 
 import { TechDocsAddonTester } from '@backstage/plugin-techdocs-addons-test-utils';
 import React from 'react';
-import {
-  fireEvent,
-  waitFor,
-  act,
-  screen,
-  prettyDOM,
-} from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { TextSize } from '../plugin';
+import { useShadowRootElements } from '@backstage/plugin-techdocs-react';
+
+jest.mock('@backstage/plugin-techdocs-react', () => ({
+  ...jest.requireActual('@backstage/plugin-techdocs-react'),
+  useShadowRootElements: jest.fn(),
+}));
 
 describe('TextSize', () => {
+  const useShadowRootElementsMock = useShadowRootElements as jest.Mock;
+
+  beforeEach(() => {
+    useShadowRootElementsMock.mockReturnValue([]);
+  });
+
   it('renders without exploding', async () => {
     const { getByText } = await TechDocsAddonTester.buildAddonsInTechDocs([
       <TextSize />,
@@ -37,14 +43,13 @@ describe('TextSize', () => {
   });
 
   it('changes content text size using slider', async () => {
-    const { getByTitle, getByText, getByRole, getByDisplayValue, debug } =
+    const { getByTitle, getByText, getByRole, getByDisplayValue } =
       await TechDocsAddonTester.buildAddonsInTechDocs([<TextSize />])
-        .withDom(
-          <body>
-            <p>TEST_CONTENT</p>
-          </body>,
-        )
+        .withDom(<body>TEST_CONTENT</body>)
         .renderWithEffects();
+
+    const content = getByText('TEST_CONTENT');
+    useShadowRootElementsMock.mockReturnValue([content]);
 
     fireEvent.click(getByTitle('Settings'));
 
@@ -67,8 +72,6 @@ describe('TextSize', () => {
     });
 
     expect(slider).toHaveTextContent('115%');
-
-    console.log(prettyDOM(document, 1000000));
 
     let style = window.getComputedStyle(getByText('TEST_CONTENT'));
 
@@ -101,6 +104,9 @@ describe('TextSize', () => {
     } = await TechDocsAddonTester.buildAddonsInTechDocs([<TextSize />])
       .withDom(<body>TEST_CONTENT</body>)
       .renderWithEffects();
+
+    const content = getByText('TEST_CONTENT');
+    useShadowRootElementsMock.mockReturnValue([content]);
 
     fireEvent.click(getByTitle('Settings'));
 
