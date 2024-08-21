@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AppNode } from '../apis';
+import { ApiHolder, AppNode } from '../apis';
 import { Expand } from '../types';
 import {
   CreateExtensionOptions,
@@ -71,6 +71,7 @@ export type CreateExtensionBlueprintOptions<
     params: TParams,
     context: {
       node: AppNode;
+      apis: ApiHolder;
       config: {
         [key in keyof TConfigSchema]: z.infer<ReturnType<TConfigSchema[key]>>;
       };
@@ -173,6 +174,7 @@ export interface ExtensionBlueprint<
       ) => ExtensionDataContainer<UOutput>,
       context: {
         node: AppNode;
+        apis: ApiHolder;
         config: TConfig & {
           [key in keyof TExtensionConfigSchema]: z.infer<
             ReturnType<TExtensionConfigSchema[key]>
@@ -285,6 +287,7 @@ class ExtensionBlueprintImpl<
       ) => ExtensionDataContainer<UOutput>,
       context: {
         node: AppNode;
+        apis: ApiHolder;
         config: {
           [key in keyof TExtensionConfigSchema]: z.infer<
             ReturnType<TExtensionConfigSchema[key]>
@@ -329,7 +332,7 @@ class ExtensionBlueprintImpl<
       inputs: { ...args.inputs, ...this.options.inputs },
       output: args.output ?? this.options.output,
       config: Object.keys(schema).length === 0 ? undefined : { schema },
-      factory: ({ node, config, inputs }) => {
+      factory: ({ node, apis, config, inputs }) => {
         return args.factory(
           (
             innerParams: TParams,
@@ -345,6 +348,7 @@ class ExtensionBlueprintImpl<
             return createExtensionDataContainer<UOutput>(
               this.options.factory(innerParams, {
                 node,
+                apis,
                 config: innerContext?.config ?? config,
                 inputs: resolveInputOverrides(
                   this.options.inputs,
@@ -357,6 +361,7 @@ class ExtensionBlueprintImpl<
           },
           {
             node,
+            apis,
             config,
             inputs,
           },

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AppNode } from '../apis';
+import { ApiHolder, AppNode } from '../apis';
 import { PortableSchema } from '../schema';
 import { Expand } from '../types';
 import {
@@ -133,6 +133,7 @@ export type CreateExtensionOptions<
   };
   factory(context: {
     node: AppNode;
+    apis: ApiHolder;
     config: {
       [key in keyof TConfigSchema]: z.infer<ReturnType<TConfigSchema[key]>>;
     };
@@ -203,6 +204,7 @@ export interface ExtensionDefinition<
         }) => ExtensionDataContainer<UOutput>,
         context: {
           node: AppNode;
+          apis: ApiHolder;
           config: TConfig & {
             [key in keyof TExtensionConfigSchema]: z.infer<
               ReturnType<TExtensionConfigSchema[key]>
@@ -273,6 +275,7 @@ export type InternalExtensionDefinition<
         };
         factory(context: {
           node: AppNode;
+          apis: ApiHolder;
           config: TConfig;
           inputs: {
             [inputName in string]: unknown;
@@ -292,6 +295,7 @@ export type InternalExtensionDefinition<
         readonly output: Array<AnyExtensionDataRef>;
         factory(context: {
           node: AppNode;
+          apis: ApiHolder;
           config: TConfig;
           inputs: ResolvedExtensionInputs<{
             [inputName in string]: ExtensionInput<
@@ -478,6 +482,7 @@ export function createExtension<
         }) => ExtensionDataContainer<UOutput>,
         context: {
           node: AppNode;
+          apis: ApiHolder;
           config: {
             [key in keyof TExtensionConfigSchema]: z.infer<
               ReturnType<TExtensionConfigSchema[key]>
@@ -547,10 +552,11 @@ export function createExtension<
         inputs: { ...overrideOptions.inputs, ...newOptions.inputs },
         output: overrideOptions.output ?? newOptions.output,
         config: Object.keys(schema).length === 0 ? undefined : { schema },
-        factory: ({ node, config, inputs }) => {
+        factory: ({ node, apis, config, inputs }) => {
           if (!overrideOptions.factory) {
             return newOptions.factory({
               node,
+              apis,
               config,
               inputs: inputs as unknown as Expand<
                 ResolvedExtensionInputs<TInputs>
@@ -569,6 +575,7 @@ export function createExtension<
               return createExtensionDataContainer<UOutput>(
                 newOptions.factory({
                   node,
+                  apis,
                   config: innerContext?.config ?? config,
                   inputs: resolveInputOverrides(
                     newOptions.inputs,
@@ -581,6 +588,7 @@ export function createExtension<
             },
             {
               node,
+              apis,
               config,
               inputs,
             },
