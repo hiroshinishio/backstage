@@ -16,7 +16,13 @@
 
 import { TechDocsAddonTester } from '@backstage/plugin-techdocs-addons-test-utils';
 import React from 'react';
-import { fireEvent, waitFor, act } from '@testing-library/react';
+import {
+  fireEvent,
+  waitFor,
+  act,
+  screen,
+  prettyDOM,
+} from '@testing-library/react';
 import { TextSize } from '../plugin';
 
 describe('TextSize', () => {
@@ -31,9 +37,13 @@ describe('TextSize', () => {
   });
 
   it('changes content text size using slider', async () => {
-    const { getByTitle, getByText, getByRole, getByDisplayValue } =
+    const { getByTitle, getByText, getByRole, getByDisplayValue, debug } =
       await TechDocsAddonTester.buildAddonsInTechDocs([<TextSize />])
-        .withDom(<body>TEST_CONTENT</body>)
+        .withDom(
+          <body>
+            <p>TEST_CONTENT</p>
+          </body>,
+        )
         .renderWithEffects();
 
     fireEvent.click(getByTitle('Settings'));
@@ -58,9 +68,13 @@ describe('TextSize', () => {
 
     expect(slider).toHaveTextContent('115%');
 
+    console.log(prettyDOM(document, 1000000));
+
     let style = window.getComputedStyle(getByText('TEST_CONTENT'));
 
-    expect(style.getPropertyValue('--md-typeset-font-size')).toBe('18.4px');
+    await waitFor(() => {
+      expect(style.getPropertyValue('--md-typeset-font-size')).toBe('18.4px');
+    });
 
     fireEvent.keyDown(slider, {
       key: 'ArrowLeft',

@@ -48,10 +48,7 @@ export const useShadowRootElements = <
         setRootNode(shadowRoot?.firstChild);
       });
       observer.observe(shadowRoot, {
-        attributes: true,
-        characterData: true,
         childList: true,
-        subtree: true,
       });
     }
     return () => observer?.disconnect();

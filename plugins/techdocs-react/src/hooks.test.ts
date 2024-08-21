@@ -121,10 +121,7 @@ describe('hooks', () => {
       it('should observe shadow root changes', async () => {
         renderHook(() => useShadowRootElements(['h1']));
         expect(observer.observe).toHaveBeenCalledWith(shadowRoot, {
-          attributes: true,
-          characterData: true,
           childList: true,
-          subtree: true,
         });
       });
 
