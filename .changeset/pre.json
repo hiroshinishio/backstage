@@ -189,5 +189,35 @@
     "@backstage/plugin-user-settings-backend": "0.2.22",
     "@backstage/plugin-user-settings-common": "0.0.1"
   },
-  "changesets": []
+  "changesets": [
+    "big-spies-stare",
+    "brown-boxes-arrive",
+    "cold-ways-protect",
+    "cuddly-rocks-invent",
+    "curly-brooms-raise",
+    "dry-monkeys-mate",
+    "empty-coats-sparkle",
+    "giant-jars-mix",
+    "healthy-moons-drum",
+    "hip-pandas-think",
+    "kind-walls-speak",
+    "lucky-sheep-cover",
+    "mighty-days-kiss",
+    "nasty-tigers-knock",
+    "ninety-mayflies-raise",
+    "purple-glasses-tease",
+    "rare-feet-melt",
+    "serious-cheetahs-help",
+    "sharp-mayflies-beg",
+    "short-moles-brush",
+    "silent-eyes-lie",
+    "six-humans-guess",
+    "sixty-rabbits-cheat",
+    "spicy-vans-eat",
+    "swift-garlics-mix",
+    "tasty-pigs-vanish",
+    "thick-walls-share",
+    "unlucky-cycles-clean",
+    "witty-years-cry"
+  ]
 }

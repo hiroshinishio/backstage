@@ -1,5 +1,16 @@
 # @backstage/plugin-scaffolder-react
 
+## 1.11.1-next.0
+
+### Patch Changes
+
+- 9a0672a: Scaffolder review page shows static amount of asterisks for secret fields.
+- Updated dependencies
+  - @backstage/plugin-catalog-react@1.12.4-next.0
+  - @backstage/core-components@0.14.10
+  - @backstage/core-plugin-api@1.9.3
+  - @backstage/plugin-permission-react@0.4.25
+
 ## 1.11.0
 
 ### Minor Changes
